@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Info - Air Quality Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #f0e130;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #f0e130;
+        }
+
+        nav a {
+            color: #f0e130;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+            color: white;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+        }
+
+        h2 {
+            color: #f0e130;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        section {
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            max-width: 400px;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            background-color: #333;
+            margin-left: 0;
+        }
+
+        th, td {
+            padding: 15px;
+            border: 1px solid #555;
+            text-align: left;
+        }
+
+        th {
+            background-color: #444;
+            color: #f0e130;
+        }
+
+        td {
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #2a2a2a;
+        }
+
+        .hardware-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .hardware-list li {
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        footer {
+            background-color: #333;
+            color: #f0e130;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Project Info</h1>
+        <nav>
+            <a href="index.html">Dashboard</a>
+            <a href="phone-number.html">Alerts</a>
+            <a href="project-info.html">Project Info</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="aqi-chart">
+            <h2>Indoor Air Quality Index <a href="https://greenecon.net/3-metrics-to-guide-air-quality-health-safety/carbon-footprint.html"> @</a></h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>CO₂ (ppm)</th>
+                        <th>Air Quality Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>..799</td>
+                        <td>Good</td>
+                    </tr>
+                    <tr>
+                        <td>800-1099</td>
+                        <td>Moderate</td>
+                    </tr>
+                    <tr>
+                        <td>1100-1499</td>
+                        <td>Poor</td>
+                    </tr>
+                    <tr>
+                        <td>1500-1999</td>
+                        <td>Unhealthy</td>
+                    </tr>
+                    <tr>
+                        <td>2000-2999</td>
+                        <td>Very Unhealthy</td>
+                    </tr>
+                    <tr>
+                        <td>3000-4999</td>
+                        <td>Hazardous</td>
+                    </tr>
+                    <tr>
+                        <td>5000+</td>
+                        <td>Extreme</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Hardware Used</h2>
+            <ul class="hardware-list">
+                <li>ESP32 Microcontroller</li>
+                <li>DHT11</li>
+                <li>MH-Z19C</li>
+                <li>Raspberry Pi</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>Indoor Air Quality Monitor by: <p> 
+        <p> Mosawar Jamshady, Johnny Rosas, Angel Guzman, Hengcheng Zhang </p>
+    </footer>
+</body>
+
+</html>

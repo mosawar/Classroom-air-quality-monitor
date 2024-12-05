@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Dashboard</title>
+    <!-- Documentation: https://www.chartjs.org/docs/latest/getting-started/  -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #f0e130;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #f0e130;
+        }
+
+        nav a {
+            color: #f0e130;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            max-width: 800px;
+            padding-right: 20px;
+        }
+
+        .card {
+            background-color: #333;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #f0e130;
+        }
+
+        .card p {
+            font-size: 1.2em;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #f0e130;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Air Quality Dashboard</h1>
+        <nav>
+            <a href="index.html">Dashboard</a>
+            <a href="phone-number.html">Alerts</a>
+            <a href="project-info.html">Project Info</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="dashboard">
+            <!-- Cards displaying various air quality parameters -->
+            <div class="card">
+                <h3>CO2</h3>
+                <p id="co2">Loading...</p> <!-- Display CO2 value -->
+            </div>
+            <div class="card">
+                <h3>Temperature</h3>
+                <p id="temperature">Loading...</p> <!-- Display temperature value -->
+            </div>
+            <div class="card">
+                <h3>Humidity</h3>
+                <p id="humidity">Loading...</p> <!-- Display humidity value -->
+            </div>
+        </section>
+
+        <section class="chart">
+            <!-- Chart displaying air quality index (AQI) over time -->
+            <canvas id="aqiChart" width="400" height="200"></canvas>
+        </section>
+    </main>
+
+    <footer>
+        <p>CS578: Air Quality Project</p>
+    </footer>
+
+    <script>
+        // Initialize Chart.js for displaying AQI data in a line chart
+        const ctx = document.getElementById('aqiChart').getContext('2d');
+        const aqiChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Timestamps will be populated here
+                datasets: [{
+                    label: 'Indoor Air Quality (IAQ)', 
+                    data: [], // AQI values will be populated here
+                    borderColor: 'yellow', // Line color for contrast
+                    backgroundColor: '#333', // Transparent fill color
+                    borderWidth: 3,
+                    tension: 0.3 // Line smoothness
+                }]
+            },
+            options: {
+                responsive: true, // Make the chart responsive to screen size
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Time', // Label for x-axis
+                            color: 'yellow' // Axis label color
+                        },
+                        ticks: {
+                            color: 'yellow' // Tick marks color
+                        },
+                        grid: {
+                            color: '#333' // Grid line color
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'CO2', // Label for y-axis
+                            color: 'yellow' // Axis label color
+                        },
+                        ticks: {
+                            color: 'yellow' // Tick marks color
+                        },
+                        grid: {
+                            color: '#333' // Grid line color
+                        },
+                        beginAtZero: true // Ensure the y-axis starts from 0
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'yellow' // Color of the legend labels
+                        }
+                    }
+                },
+                layout: {
+                    padding: 10 // Padding around the chart
+                }
+            },
+            plugins: [{
+                id: 'greyBackground', // Custom plugin for background color
+                beforeDraw: (chart) => {
+                    const ctx = chart.ctx;
+                    ctx.save();
+                    ctx.fillStyle = '#333'; // Background color for the chart
+                    ctx.fillRect(0, 0, chart.width, chart.height);
+                    ctx.restore();
+                }
+            }]
+        });
+
+        // Function to fetch data from 'data.json' file
+        async function fetchData() {
+            try {
+                const response = await fetch('data.json'); // Request to fetch data
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`); // Handle HTTP errors
+                }
+
+                const data = await response.json(); // parse JSON data
+                const filteredData = filterDuplicates(data);
+
+                // Update dashboard with the most recent data
+                const latestData = filteredData[filteredData.length - 1]; // get recent entry
+
+                document.getElementById("co2").textContent = latestData.CO2 + " PPM"; // Update CO2 value
+                document.getElementById("temperature").textContent = latestData.temperature + "°F"; // Update temperature value
+                document.getElementById("humidity").textContent = latestData.humidity + "%"; // Update humidity value
+
+                // Update the AQI chart with the new data
+                updateChart(filteredData);
+            } catch (error) {
+                console.error('Error fetching data:', error); // Log error
+            }
+        }
+
+        // Function to filter duplicate timestamps from the data
+        // error handling
+        function filterDuplicates(data) {
+            const seen = new Set();
+            return data.filter(entry => {
+                if (!seen.has(entry.timestamp)){ // if data hasn't been seen before add it based on timestamp!
+                    seen.add(entry.timestamp);
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        // Function to update the AQI chart with new data
+        function updateChart(data) {
+            if (!data || data.length === 0) {
+                return;
+            }
+
+            const timestamps = data.map(entry => new Date(entry.timestamp).toLocaleTimeString()); // Extract timestamps
+            const co2Value = data.map(entry => entry.CO2); // Extract co2 values
+
+            aqiChart.data.labels = timestamps; // Set x-axis labels (timestamps)
+            aqiChart.data.datasets[0].data = co2Value; // Set y-axis data (co2 values)
+            aqiChart.update(); // Update the chart with new data
+        }
+
+        // Fetch data every 60 seconds or 1 minute to keep the dashboard updated
+        setInterval(fetchData, 60000); // Set interval for repeated data fetching (1 sec = 1000 ms)s
+        fetchData(); // Initial data fetch on page load
+    </script>
+    
+    <footer>
+        <p>Indoor Air Quality Monitor by: <p> 
+        <p> Mosawar Jamshady, Johnny Rosas, Angel Guzman, Hengcheng Zhang </p>
+    </footer>
+</body>
+
+</html>

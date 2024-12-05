@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Number Registration</title>
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #f0e130;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #f0e130;
+        }
+
+        nav a {
+            color: #f0e130;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Alerts Section */
+        .alerts form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .alerts label,
+        .alerts input,
+        .alerts button {
+            margin: 10px 0;
+        }
+
+        .alerts input {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .alerts button {
+            background-color: #f0e130;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .alerts button:hover {
+            background-color: #e6d927;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #f0e130;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Air Quality Alerts</h1>
+        <!-- Navigation links to the dashboard and alerts page -->
+        <nav>
+            <a href="index.html">Dashboard</a>
+            <a href="phone-number.html">Alerts</a>
+            <a href="project-info.html">Project Info</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Section for registering phone numbers for alerts -->
+        <section class="alerts">
+            <h2>Sign Up for SMS Alerts</h2>
+            <!-- Form for phone number registration -->
+            <form action="/register_phone" method="POST">
+                <!-- Label and input for phone number -->
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" placeholder="+1234567890" required>
+                <!-- Submit button for registering the phone number -->
+                <button type="submit">Register</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>Indoor Air Quality Monitor by: <p> 
+        <p> Mosawar Jamshady, Johnny Rosas, Angel Guzman, Hengcheng Zhang </p>
+    </footer>
+</body>
+
+</html>

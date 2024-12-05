@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Environment variables
+.env
+
+# Virtual environment folders
+venv/
+env/
+.virtualenv/
+.venv/
+
+# Flask files
+instance/
+*.log
+*.sqlite3
+*.db
+*.pdb
+*.pyproj
+*.sublime-project
+*.sublime-workspace
+
+# JetBrains IDEs
+.idea/
+
+# VS Code files
+.vscode/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# macOS files
+.DS_Store
+
+# Test coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Python egg files
+*.egg
+*.egg-info/
+dist/
+build/

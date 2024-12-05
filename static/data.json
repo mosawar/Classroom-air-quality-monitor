@@ -1,0 +1,14 @@
+[
+    {
+        "timestamp": "2024-11-30T22:36:00",
+        "CO2": 650,
+        "temperature": 58,
+        "humidity": 49
+    },
+    {
+        "timestamp": "2024-11-30T22:40:00",
+        "CO2": 760,
+        "temperature": 65,
+        "humidity": 43
+    }
+]
