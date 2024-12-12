@@ -3,20 +3,19 @@ from twilio.rest import Client
 from apscheduler.schedulers.background import BackgroundScheduler
 import json
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
-# Define the secure token
-SECRET_TOKEN = "Token"
+ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE_NUMBER  = os.getenv("TWILIO_PHONE_NUMBER")
 
-# The server IP
-HOST_NAME = '0.0.0.0'
-# Twilio configuration #################### DELETE BEFORE MAKING REPO PUBLIC #################
-ACCOUNT_SID = ''
-AUTH_TOKEN = ''
-TWILIO_PHONE_NUMBER = '+'
-
-client = Client(ACCOUNT_SID, AUTH_TOKEN)
+client = Client(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_AUTH_TOKEN"))
 
 # File path for storing registered phone numbers
 REGISTERED_PHONE_FILE = 'registered_phone_numbers.txt'
@@ -124,75 +123,6 @@ def project_info():
 @app.route('/data.json')
 def serve_data():
     return app.send_static_file('data.json')
-def get_file_name():
-    """Generate the file name with the current date."""
-    current_date = datetime.now().strftime("%Y-%m-%d")  # Format: YYYY-MM-DD
-    return f"sensor_data_{current_date}.json"
-
-def save_data(file_name, data):
-    """Save data to the JSON file."""
-    with open(file_name, "w") as file:
-        json.dump(data, file, indent=4)
-
-def load_data(file_name):
-    """Load existing data from the JSON file."""
-    if os.path.exists(file_name):
-        try:
-            with open(file_name, "r") as file:
-                return json.load(file)
-        except json.JSONDecodeError:
-            return []  # Return an empty list if the file is invalid
-    return []  # Return an empty list if the file doesn't exist
-
-@app.route("/data.json", methods=["POST"])
-def receive_data():
-    # Check for the Authorization header
-    token = request.headers.get("Authorization")
-    if token != SECRET_TOKEN:
-        return jsonify({"error": "Unauthorized"}), 401
-
-    # Process the incoming data
-    data = request.json
-    if not data:
-        return jsonify({"error": "No data received"}), 400
-
-    # Generate server-side timestamp
-    server_timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-
-    # Extract and validate data from the request
-    try:
-        co2_ppm = data["co2Ppm"]
-        temperature = data["temperature"]
-        temperature = int(float(temperature) * 1.8 + 32)  # Convert temperature to Fahrenheit
-        humidity = data["humidity"]
-    except KeyError as e:
-        return jsonify({"error": f"Missing field: {e.args[0]}"}), 400
-
-    # Prepare the data entry
-    entry = {
-        "timestamp": server_timestamp,
-        "CO2": co2_ppm,
-        "temperature": temperature,
-        "humidity": humidity,
-    }
-
-    # Save data to the appropriate file
-    file_name = get_file_name()
-    existing_data = load_data(file_name)
-    existing_data.append(entry)
-    save_data(file_name, existing_data)
-
-    # Log received data with timestamp
-    print(f"Timestamp: {server_timestamp}")
-    print(f"CO2 (PPM): {co2_ppm}")
-    print(f"Temperature (F): {temperature}")
-    print(f"Humidity: {humidity}")
-
-    # Respond to the client
-    return jsonify({
-        "message": "Data received successfully",
-        "server_timestamp": server_timestamp
-    }), 200
 
 @app.route('/register_phone', methods=['POST'])
 def register_phone():
@@ -218,4 +148,4 @@ def register_phone():
         return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(host=HOST_NAME, port=5000)
+    app.run(host='0.0.0.0', port=5000)
